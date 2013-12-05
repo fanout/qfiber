@@ -23,10 +23,24 @@
 
 #include "qfiberglobal.h"
 
+#include <QBasicAtomicInt>
 #include <QMetaMethod>
 #include <QMetaObject>
+#include "qfiberzmqmessage.h"
+#include "qfiberchannel.h"
 
 namespace QFiber {
+
+void initMeta()
+{
+	static QBasicAtomicInt flag = Q_BASIC_ATOMIC_INITIALIZER(0);
+	if(!flag)
+	{
+		flag = 1;
+		qRegisterMetaType<QFiber::ZmqMessage>();
+		qRegisterMetaType<QFiber::Channel>();
+	}
+}
 
 QByteArray methodReturnType(const QMetaObject *obj, const QByteArray &method, const QList<QByteArray> argTypes)
 {

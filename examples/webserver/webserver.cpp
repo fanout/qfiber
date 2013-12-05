@@ -5,6 +5,12 @@
 
 Q_DECLARE_METATYPE(QHostAddress)
 
+void initMeta()
+{
+	qRegisterMetaType<QHostAddress>();
+	qRegisterMetaTypeStreamOperators<QHostAddress>();
+}
+
 void handler(const QVariantList &args)
 {
 	int fd = args[0].toInt();
@@ -84,11 +90,7 @@ void listener(const QVariantList &args)
 int main(int argc, char **argv)
 {
 	QCoreApplication qapp(argc, argv);
-
-	qRegisterMetaType<QFiber::ZmqMessage>();
-	qRegisterMetaType<QFiber::Channel>();
-	qRegisterMetaType<QHostAddress>();
-	qRegisterMetaTypeStreamOperators<QHostAddress>();
+	initMeta();
 
 	QFiber::Fiber listenerFiber("listener");
 	listenerFiber.start(listener, 3128);

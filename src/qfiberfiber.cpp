@@ -114,6 +114,7 @@ public:
 		threaded(false),
 		lt(0)
 	{
+		initMeta();
 	}
 
 	~Private()

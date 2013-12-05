@@ -33,6 +33,8 @@ typedef QVariant (*FuncNoArgs)();
 typedef void (*FuncNoRet)(const QVariantList &args);
 typedef void (*FuncNoArgsNoRet)();
 
+void initMeta();
+
 QByteArray methodReturnType(const QMetaObject *obj, const QByteArray &method, const QList<QByteArray> argTypes);
 
 bool invokeMethodWithVariants(QObject *obj, const QByteArray &method, const QVariantList &args, QVariant *ret, Qt::ConnectionType type);
