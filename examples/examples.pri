@@ -4,4 +4,5 @@ QT -= gui
 QT += network
 
 INCLUDEPATH += $$PWD/../src
-include($$PWD/../src/src.pri)
+LIBS += -L$$PWD/../src -lqfiber
+PRE_TARGETDEPS += $$PWD/../src/libqfiber.a

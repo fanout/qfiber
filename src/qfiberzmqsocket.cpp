@@ -29,20 +29,6 @@
 #include <zmq.h>
 #include "qfiberzmqcontext.h"
 
-// needed for _lthread_sched_event
-extern "C" {
-#include "lthread_int.h"
-}
-
-static bool get_rcvmore(void *sock)
-{
-	qint64 more;
-	size_t opt_len = sizeof(more);
-	int ret = zmq_getsockopt(sock, ZMQ_RCVMORE, &more, &opt_len);
-	assert(ret == 0);
-	return more ? true : false;
-}
-
 static int get_fd(void *sock)
 {
 	int fd;
@@ -52,9 +38,18 @@ static int get_fd(void *sock)
 	return fd;
 }
 
+static bool get_rcvmore(void *sock)
+{
+	int more;
+	size_t opt_len = sizeof(more);
+	int ret = zmq_getsockopt(sock, ZMQ_RCVMORE, &more, &opt_len);
+	assert(ret == 0);
+	return more ? true : false;
+}
+
 static int get_events(void *sock)
 {
-	quint32 events;
+	int events;
 	size_t opt_len = sizeof(events);
 	int ret = zmq_getsockopt(sock, ZMQ_EVENTS, &events, &opt_len);
 	assert(ret == 0);
@@ -156,19 +151,19 @@ ZmqMessage ZmqSocket::read()
 		assert(ret == 0);
 		while(true)
 		{
-			ret = zmq_recv(sock_, &msg, ZMQ_NOBLOCK);
+			ret = zmq_msg_recv(&msg, sock_, ZMQ_NOBLOCK);
 			if(ret < 0 && errno == EAGAIN)
 			{
 				int flags = 0;
 				while(!(flags & ZMQ_POLLIN))
 				{
-					_lthread_sched_event(lthread_current(), fd_, LT_EV_READ, 0);
+					lthread_wait_read(fd_, 0);
 					flags = get_events(sock_);
 				}
 			}
 			else
 			{
-				assert(ret == 0);
+				assert(ret == (int)zmq_msg_size(&msg));
 				break;
 			}
 		}
@@ -194,19 +189,19 @@ void ZmqSocket::write(const ZmqMessage &message)
 		memcpy(zmq_msg_data(&msg), buf.data(), buf.size());
 		while(true)
 		{
-			ret = zmq_send(sock_, &msg, ZMQ_NOBLOCK | (n + 1 < message.count() ? ZMQ_SNDMORE : 0));
+			ret = zmq_msg_send(&msg, sock_, ZMQ_NOBLOCK | (n + 1 < message.count() ? ZMQ_SNDMORE : 0));
 			if(ret < 0 && errno == EAGAIN)
 			{
 				int flags = 0;
 				while(!(flags & ZMQ_POLLOUT))
 				{
-					_lthread_sched_event(lthread_current(), fd_, LT_EV_WRITE, 0);
+					lthread_wait_read(fd_, 0);
 					flags = get_events(sock_);
 				}
 			}
 			else
 			{
-				assert(ret == 0);
+				assert(ret == buf.size());
 				break;
 			}
 		}
