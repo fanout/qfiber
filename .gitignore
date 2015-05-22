@@ -1,0 +1,9 @@
+conf.pri
+conf.log
+/Makefile
+moc_*.cpp
+*.moc
+*.o
+*.prl
+*.a
+/examples/webserver/webserver
