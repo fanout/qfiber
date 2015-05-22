@@ -40,7 +40,6 @@ public:
 	QVariantList read();
 	QVariant readSingle();
 
-	void write(const QVariantList &params);
 	void write(
 		const QVariant &param0,
 		const QVariant &param1 = QVariant(),
@@ -52,7 +51,7 @@ public:
 		const QVariant &param7 = QVariant(),
 		const QVariant &param8 = QVariant(),
 		const QVariant &param9 = QVariant());
-	void write(
+	void writeArgs(
 		QGenericArgument param0,
 		QGenericArgument param1 = QGenericArgument(),
 		QGenericArgument param2 = QGenericArgument(),
@@ -63,6 +62,7 @@ public:
 		QGenericArgument param7 = QGenericArgument(),
 		QGenericArgument param8 = QGenericArgument(),
 		QGenericArgument param9 = QGenericArgument());
+	void write(const QVariantList &params);
 
 private:
 	class Private;

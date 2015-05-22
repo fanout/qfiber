@@ -164,7 +164,7 @@ void Channel::write(
 		param5, param6, param7, param8, param9));
 }
 
-void Channel::write(
+void Channel::writeArgs(
 	QGenericArgument param0,
 	QGenericArgument param1,
 	QGenericArgument param2,

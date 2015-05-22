@@ -151,7 +151,7 @@ ZmqMessage ZmqSocket::read()
 		assert(ret == 0);
 		while(true)
 		{
-			ret = zmq_msg_recv(&msg, sock_, ZMQ_NOBLOCK);
+			ret = zmq_msg_recv(&msg, sock_, ZMQ_DONTWAIT);
 			if(ret < 0 && errno == EAGAIN)
 			{
 				int flags = 0;
@@ -189,7 +189,7 @@ void ZmqSocket::write(const ZmqMessage &message)
 		memcpy(zmq_msg_data(&msg), buf.data(), buf.size());
 		while(true)
 		{
-			ret = zmq_msg_send(&msg, sock_, ZMQ_NOBLOCK | (n + 1 < message.count() ? ZMQ_SNDMORE : 0));
+			ret = zmq_msg_send(&msg, sock_, ZMQ_DONTWAIT | (n + 1 < message.count() ? ZMQ_SNDMORE : 0));
 			if(ret < 0 && errno == EAGAIN)
 			{
 				int flags = 0;
