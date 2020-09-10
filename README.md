@@ -1,8 +1,7 @@
 QFiber
 ======
 
-Author: Justin Karneges <justin@fanout.io>  
-Mailing List: http://lists.fanout.io/mailman/listinfo/fanout-users
+Author: Justin Karneges <justin@fanout.io>
 
 QFiber is a C++ coroutines library that makes it easy to write hybrid event-driven and threaded programs. It uses Lthread for the actual coroutines, ZeroMQ to provide communication between tasks (whether living on the same thread or across threads), and Qt for dynamic typing and implicit sharing of objects.
 
